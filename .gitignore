@@ -21,7 +21,6 @@ target/
 .bin/
 .settings/
 .classpath
-.project
 
 # OS
 .DS_Store
