@@ -20,7 +20,6 @@ target/
 # eclipse project file
 .bin/
 .settings/
-.classpath
 
 # OS
 .DS_Store
