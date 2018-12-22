@@ -1,121 +1,128 @@
-import java.util.*;
+import java.awt.*;
+import java.util.TimerTask;
 
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-public class Player {
-	
-	private int id,size,x,y;
-	private int[][] colorArr; //1 = shura 2 = tur;
-	private String color;
-	
-	public Player(int id,int size,int[][] colorArr,String color)
-	{
-		this.x = (int)(Math.random()*40);
-		this.y = (int)(Math.random()*40);
-		this.id = id;
-		colorArr[x][y] = id;
-		this.size = size;
-		this.colorArr = colorArr;
+public class Player extends TimerTask implements IDrawable {
+
+	private Direction direction;
+
+	private int x;
+
+	private int y;
+
+	private int radius, halfRadius;
+
+	private Color color;
+
+	private Polygon polygon;
+
+	private Polyline2D polyline;
+
+	public Player(int x, int y, int radius, Color color) {
+		this.x = x;
+		this.y = y;
+		this.radius = radius;
+		halfRadius = radius / 2;
+		this.color = color;
+
+		polygon = new Polygon();
+		polygon.addPoint(x - radius, y - radius);
+		polygon.addPoint(x + radius, y - radius);
+		polygon.addPoint(x + radius, y + radius);
+		polygon.addPoint(x - radius, y + radius);
+
+		polyline = new Polyline2D();
+
 	}
 
-	
-	
-	public void moveRight()
-	{
-		
-	}
-	
-
-
-
-	public int getId() {
-		return id;
+	public void setDirection(Direction direction) {
+		this.direction = direction;
 	}
 
-
-
-
-
-
-
-	public void setId(int id) {
-		this.id = id;
+	public Direction getDirection() {
+		return direction;
 	}
 
-
-
-
-
-
-
-	public int getSize() {
-		return size;
+	public int getX() {
+		return x;
 	}
 
-
-
-
-
-
-
-	public void setSize(int size) {
-		this.size = size;
+	public int getY() {
+		return y;
 	}
 
-
-
-
-
-	public int[][] getColorArr() {
-		return colorArr;
+	public int getRadius() {
+		return radius;
 	}
 
-
-
-
-
-
-
-	public void setColorArr(int[][] colorArr) {
-		this.colorArr = colorArr;
-	}
-
-
-
-
-
-
-
-	public String getColor() {
+	public Color getColor() {
 		return color;
 	}
 
-
-
-
-
-
-
-	public void setColor(String color) {
+	public void setColor(Color color) {
 		this.color = color;
 	}
 
+	@Override
+	public void draw(Graphics2D graphics2D) {
 
+		Color savedColor = graphics2D.getColor();
 
+		graphics2D.setColor(this.color);
 
+		graphics2D.fillPolygon(polygon);
 
+		if (polyline.npoints != 0) {
+			graphics2D.draw(polyline);
+		}
 
+		graphics2D.fillRect(x - halfRadius, y - halfRadius, radius, radius);
+
+		graphics2D.setColor(savedColor);
+
+	}
 
 	@Override
 	public String toString() {
-		return "Player [id=" + id + ", size=" + size
-				+", colorArr="
-				+ Arrays.toString(colorArr) + "]";
+		return "Circle{" + "x=" + x + ", y=" + y + ", radius=" + radius
+				+ ", color=" + color + '}';
 	}
 
-	
-	
-	
+	@Override
+	public void run() {
+		if (direction == null) {
+			return;
+		}
 
+		int oldX = x, oldY = y;
 
+		switch (direction) {
+		case UP:
+			y = y - radius / 2;
+			break;
+		case DOWN:
+			y = y + radius / 2;
+			break;
+		case LEFT:
+			x = x - radius / 2;
+			break;
+		case RIGHT:
+			x = x + radius / 2;
+			break;
+		default:
+			return;
+		}
+
+		if (polyline.contains(x, y)) {
+			System.out.println("LOOOOOSSSSSSSSSSSEEEEEERRRRRRRRRRR");
+			System.exit(2);
+		}
+		
+		if (!polygon.contains(x, y)) {
+			System.out.println("OUT");
+			polyline.addPoint(x, y);
+		} else {
+			System.out.println("IN");
+		}
+
+	}
 }
