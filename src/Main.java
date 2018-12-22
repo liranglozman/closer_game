@@ -62,7 +62,6 @@ public class Main {
 		List<IDrawable> drawables = new ArrayList<>();
 		m_player = new Player(50, 50, 10, Color.BLUE);
 		drawables.add(m_player);
-		drawables.add(new Circle(50, 50, 10, Color.RED));
 		myCanvas = new MyCanvas(800, 800, drawables);
 		controlPanel.add(myCanvas);
 	}
